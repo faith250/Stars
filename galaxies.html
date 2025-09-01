@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galaxies - Cosmic Explorer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Existing CSS styles remain the same */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #0a0a1a;
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+        
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .star {
+            position: absolute;
+            background-color: #ffffff;
+            border-radius: 50%;
+            animation: twinkle 4s infinite;
+        }
+        
+        @keyframes twinkle {
+            0% { opacity: 0.2; }
+            50% { opacity: 1; }
+            100% { opacity: 0.2; }
+        }
+        
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 20px 50px;
+            background: rgba(10, 10, 26, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 100;
+            transition: all 0.3s ease;
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            background: linear-gradient(90deg, #4a69bd, #9c88ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-links li {
+            margin-left: 30px;
+        }
+        
+        .nav-links a {
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .nav-links a:hover {
+            color: #9c88ff;
+        }
+        
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #4a69bd, #9c88ff);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+        
+        .page-header {
+            padding: 150px 50px 50px;
+            text-align: center;
+        }
+        
+        .page-header h1 {
+            font-size: 50px;
+            margin-bottom: 20px;
+            background: linear-gradient(90deg, #4a69bd, #9c88ff, #e056fd);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .page-header p {
+            font-size: 18px;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+            color: #cccccc;
+        }
+        
+        .content {
+            padding: 50px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .section-title {
+            font-size: 36px;
+            margin-bottom: 30px;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, #4a69bd, #9c88ff);
+        }
+        
+        .galaxy-types {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+        
+        .galaxy-card {
+            background: rgba(20, 20, 40, 0.7);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(156, 136, 255, 0.2);
+        }
+        
+        .galaxy-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(156, 136, 255, 0.3);
+            border-color: rgba(156, 136, 255, 0.5);
+        }
+        
+        .galaxy-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        
+        .galaxy-info {
+            padding: 20px;
+        }
+        
+        .galaxy-info h3 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: #9c88ff;
+        }
+        
+        .galaxy-info p {
+            line-height: 1.6;
+            color: #cccccc;
+        }
+        
+        .notable-galaxies {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+        
+        .notable-card {
+            background: rgba(20, 20, 40, 0.7);
+            border-radius: 15px;
+            padding: 25px;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(156, 136, 255, 0.2);
+        }
+        
+        .notable-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(156, 136, 255, 0.3);
+            border-color: rgba(156, 136, 255, 0.5);
+        }
+        
+        .notable-icon {
+            font-size: 40px;
+            margin-right: 20px;
+            color: #9c88ff;
+        }
+        
+        .notable-info h3 {
+            font-size: 22px;
+            margin-bottom: 5px;
+        }
+        
+        .notable-info p {
+            color: #cccccc;
+            line-height: 1.5;
+        }
+        
+        .facts-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+        
+        .fact-card {
+            background: rgba(20, 20, 40, 0.7);
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(156, 136, 255, 0.2);
+        }
+        
+        .fact-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(156, 136, 255, 0.3);
+            border-color: rgba(156, 136, 255, 0.5);
+        }
+        
+        .fact-number {
+            font-size: 48px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            background: linear-gradient(90deg, #4a69bd, #9c88ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .fact-text {
+            font-size: 18px;
+            color: #cccccc;
+            line-height: 1.5;
+        }
+        
+        .gallery {
+            margin-bottom: 60px;
+        }
+        
+        .gallery-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .gallery-item {
+            position: relative;
+            border-radius: 10px;
+            overflow: hidden;
+            height: 200px;
+            transition: all 0.3s ease;
+        }
+        
+        .gallery-item:hover {
+            transform: scale(1.03);
+        }
+        
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .gallery-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 15px;
+            background: rgba(10, 10, 26, 0.8);
+            backdrop-filter: blur(5px);
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+        
+        .gallery-item:hover .gallery-overlay {
+            transform: translateY(0);
+        }
+        
+        .gallery-title {
+            font-size: 18px;
+            margin-bottom: 5px;
+            color: #9c88ff;
+        }
+        
+        .gallery-desc {
+            font-size: 14px;
+            color: #cccccc;
+        }
+        
+        footer {
+            padding: 30px 50px;
+            background: rgba(10, 10, 26, 0.8);
+            text-align: center;
+            border-top: 1px solid rgba(156, 136, 255, 0.2);
+            margin-top: 50px;
+        }
+        
+        .social-links {
+            margin-bottom: 20px;
+        }
+        
+        .social-links a {
+            color: #ffffff;
+            font-size: 20px;
+            margin: 0 15px;
+            transition: all 0.3s ease;
+        }
+        
+        .social-links a:hover {
+            color: #9c88ff;
+            transform: translateY(-3px);
+        }
+        
+        .menu-toggle {
+            display: none;
+            font-size: 24px;
+            cursor: pointer;
+        }
+        
+        @media (max-width: 768px) {
+            header {
+                padding: 15px 20px;
+            }
+            
+            .menu-toggle {
+                display: block;
+            }
+            
+            .nav-links {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                height: 100vh;
+                width: 250px;
+                background: rgba(10, 10, 26, 0.95);
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                transition: right 0.5s ease;
+            }
+            
+            .nav-links.active {
+                right: 0;
+            }
+            
+            .nav-links li {
+                margin: 20px 0;
+            }
+            
+            .page-header {
+                padding: 120px 20px 30px;
+            }
+            
+            .page-header h1 {
+                font-size: 36px;
+            }
+            
+            .content {
+                padding: 30px 20px;
+            }
+        }
+        
+        /* Wikipedia link styling */
+        .wiki-link {
+            color: #9c88ff;
+            text-decoration: none;
+            border-bottom: 1px dashed #9c88ff;
+            transition: all 0.3s ease;
+        }
+        
+        .wiki-link:hover {
+            color: #e056fd;
+            border-bottom-color: #e056fd;
+        }
+    </style>
+</head>
+<body>
+    <!-- Starry Background -->
+    <div class="stars" id="stars"></div>
+    
+    <!-- Header -->
+    <header>
+        <nav>
+            <div class="logo">Cosmic Explorer</div>
+            <div class="menu-toggle" id="menuToggle">
+                <i class="fas fa-bars"></i>
+            </div>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="stars.html">Stars</a></li>
+                <li><a href="galaxies.html">Galaxies</a></li>
+                <li><a href="constellations.html">Constellations</a></li>
+                <li><a href="exploration.html">Space Exploration</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1>The Magnificent Galaxies</h1>
+        <p><a href="https://en.wikipedia.org/wiki/Galaxy" target="_blank" class="wiki-link">Galaxies</a> are vast systems of stars, gas, dust, and <a href="https://en.wikipedia.org/wiki/Dark_matter" target="_blank" class="wiki-link">dark matter</a> bound together by gravity. These cosmic islands come in various shapes and sizes, containing billions to trillions of stars. Journey through the different types of galaxies and discover their secrets.</p>
+    </div>
+    
+    <!-- Content Section -->
+    <div class="content">
+        <!-- Galaxy Types -->
+        <section>
+            <h2 class="section-title">Types of Galaxies</h2>
+            <div class="galaxy-types">
+                <div class="galaxy-card">
+                    <img src="https://images.unsplash.com/photo-1502134249126-9f3755a50d78?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Spiral Galaxy" class="galaxy-image">
+                    <div class="galaxy-info">
+                        <h3><a href="https://en.wikipedia.org/wiki/Spiral_galaxy" target="_blank" class="wiki-link">Spiral Galaxies</a></h3>
+                        <p>Characterized by their spiral arms that extend from the center. These galaxies have a flat, rotating disk with a central bulge and often contain a supermassive black hole at their core.</p>
+                    </div>
+                </div>
+                <div class="galaxy-card">
+                    <img src="https://images.unsplash.com/photo-1502134249126-9f3755a50d78?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Elliptical Galaxy" class="galaxy-image">
+                    <div class="galaxy-info">
+                        <h3><a href="https://en.wikipedia.org/wiki/Elliptical_galaxy" target="_blank" class="wiki-link">Elliptical Galaxies</a></h3>
+                        <p>Ranging from nearly spherical to highly flattened, these galaxies contain older, redder stars and very little gas and dust. They are among the largest galaxies in the universe.</p>
+                    </div>
+                </div>
+                <div class="galaxy-card">
+                    <img src="https://images.unsplash.com/photo-1502134249126-9f3755a50d78?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Irregular Galaxy" class="galaxy-image">
+                    <div class="galaxy-info">
+                        <h3><a href="https://en.wikipedia.org/wiki/Irregular_galaxy" target="_blank" class="wiki-link">Irregular Galaxies</a></h3>
+                        <p>Lacking a distinct shape, these galaxies often appear chaotic and disorganized. They are typically rich in gas and dust, making them active sites of star formation.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Galaxy Facts -->
+        <section>
+            <h2 class="section-title">Amazing Galaxy Facts</h2>
+            <div class="facts-container">
+                <div class="fact-card">
+                    <div class="fact-number">2 Trillion</div>
+                    <div class="fact-text">Estimated number of galaxies in the <a href="https://en.wikipedia.org/wiki/Observable_universe" target="_blank" class="wiki-link">observable universe</a></div>
+                </div>
+                <div class="fact-card">
+                    <div class="fact-number">100,000</div>
+                    <div class="fact-text">Light-years across the diameter of the <a href="https://en.wikipedia.org/wiki/Milky_Way" target="_blank" class="wiki-link">Milky Way</a></div>
+                </div>
+                <div class="fact-card">
+                    <div class="fact-number">200-400</div>
+                    <div class="fact-text">Billion stars in the Milky Way galaxy</div>
+                </div>
+                <div class="fact-card">
+                    <div class="fact-number">13.6</div>
+                    <div class="fact-text">Billion years ago, the oldest known galaxy formed</div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Notable Galaxies -->
+        <section>
+            <h2 class="section-title">Notable Galaxies</h2>
+            <div class="notable-galaxies">
+                <div class="notable-card">
+                    <div class="notable-icon">
+                        <i class="fas fa-globe"></i>
+                    </div>
+                    <div class="notable-info">
+                        <h3><a href="https://en.wikipedia.org/wiki/Milky_Way" target="_blank" class="wiki-link">Milky Way</a></h3>
+                        <p>Our home galaxy, a barred spiral galaxy containing our Solar System. We are located about 26,000 light-years from the galactic center.</p>
+                    </div>
+                </div>
+                <div class="notable-card">
+                    <div class="notable-icon">
+                        <i class="fas fa-globe"></i>
+                    </div>
+                    <div class="notable-info">
+                        <h3><a href="https://en.wikipedia.org/wiki/Andromeda_Galaxy" target="_blank" class="wiki-link">Andromeda</a></h3>
+                        <p>The nearest major galaxy to the Milky Way, located about 2.5 million light-years away. It is on a collision course with our galaxy.</p>
+                    </div>
+                </div>
+                <div class="notable-card">
+                    <div class="notable-icon">
+                        <i class="fas fa-globe"></i>
+                    </div>
+                    <div class="notable-info">
+                        <h3><a href="https://en.wikipedia.org/wiki/Whirlpool_Galaxy" target="_blank" class="wiki-link">Whirlpool Galaxy</a></h3>
+                        <p>A classic spiral galaxy with a well-defined structure, interacting with a smaller companion galaxy. It's about 23 million light-years away.</p>
+                    </div>
+                </div>
+                <div class="notable-card">
+                    <div class="notable-icon">
+                        <i class="fas fa-globe"></i>
+                    </div>
+                    <div class="notable-info">
+                        <h3><a href="https://en.wikipedia.org/wiki/Sombrero_Galaxy" target="_blank" class="wiki-link">Sombrero Galaxy</a></h3>
+                        <p>A nearly edge-on spiral galaxy with a bright nucleus, large central bulge, and a prominent dust lane, resembling a sombrero hat.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Gallery -->
+        <section class="gallery">
+            <h2 class="section-title">Galaxy Gallery</h2>
+            <div class="gallery-container">
+                <div class="gallery-item">
+                    <img src="https://images.unsplash.com/photo-1502134249126-9f3755a50d78?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Galaxy Image">
+                    <div class="gallery-overlay">
+                        <div class="gallery-title">Spiral Galaxy NGC 3953</div>
+                        <div class="gallery-desc">Located about 55 million light-years away</div>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <img src="https://images.unsplash.com/photo-1502134249126-9f3755a50d78?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Galaxy Image">
+                    <div class="gallery-overlay">
+                        <div class="gallery-title">Elliptical Galaxy M87</div>
+                        <div class="gallery-desc">Home to a supermassive black hole</div>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <img src="https://images.unsplash.com/photo-1502134249126-9f3755a50d78?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Galaxy Image">
+                    <div class="gallery-overlay">
+                        <div class="gallery-title">Interacting Galaxies</div>
+                        <div class="gallery-desc">Arp 273, a pair of interacting galaxies</div>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <img src="https://images.unsplash.com/photo-1502134249126-9f3755a50d78?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Galaxy Image">
+                    <div class="gallery-overlay">
+                        <div class="gallery-title">Triangulum Galaxy</div>
+                        <div class="gallery-desc">Third-largest galaxy in our Local Group</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    
+    <!-- Footer -->
+    <footer>
+        <div class="social-links">
+            <a href="#"><i class="fab fa-facebook"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-youtube"></i></a>
+        </div>
+        <p>&copy; 2023 Cosmic Explorer. All rights reserved.</p>
+    </footer>
+    
+    <script>
+        // Create starry background
+        function createStars() {
+            const starsContainer = document.getElementById('stars');
+            const numberOfStars = 200;
+            
+            for (let i = 0; i < numberOfStars; i++) {
+                const star = document.createElement('div');
+                star.classList.add('star');
+                
+                // Random position
+                const posX = Math.random() * 100;
+                const posY = Math.random() * 100;
+                
+                // Random size
+                const size = Math.random() * 3;
+                
+                // Random animation duration
+                const duration = Math.random() * 5 + 3;
+                
+                star.style.left = `${posX}%`;
+                star.style.top = `${posY}%`;
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+                star.style.animationDuration = `${duration}s`;
+                
+                starsContainer.appendChild(star);
+            }
+        }
+        
+        // Mobile menu toggle
+        const menuToggle = document.getElementById('menuToggle');
+        const navLinks = document.getElementById('navLinks');
+        
+        menuToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+        
+        // Close mobile menu when a link is clicked
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('active');
+            });
+        });
+        
+        // Initialize stars on page load
+        window.addEventListener('load', createStars);
+    </script>
+</body>
+</html>

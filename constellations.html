@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Constellations - Cosmic Explorer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Existing CSS styles remain the same */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #0a0a1a;
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+        
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .star {
+            position: absolute;
+            background-color: #ffffff;
+            border-radius: 50%;
+            animation: twinkle 4s infinite;
+        }
+        
+        @keyframes twinkle {
+            0% { opacity: 0.2; }
+            50% { opacity: 1; }
+            100% { opacity: 0.2; }
+        }
+        
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 20px 50px;
+            background: rgba(10, 10, 26, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 100;
+            transition: all 0.3s ease;
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            background: linear-gradient(90deg, #4a69bd, #9c88ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-links li {
+            margin-left: 30px;
+        }
+        
+        .nav-links a {
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .nav-links a:hover {
+            color: #9c88ff;
+        }
+        
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #4a69bd, #9c88ff);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+        
+        .page-header {
+            padding: 150px 50px 50px;
+            text-align: center;
+        }
+        
+        .page-header h1 {
+            font-size: 50px;
+            margin-bottom: 20px;
+            background: linear-gradient(90deg, #4a69bd, #9c88ff, #e056fd);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .page-header p {
+            font-size: 18px;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+            color: #cccccc;
+        }
+        
+        .content {
+            padding: 50px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .section-title {
+            font-size: 36px;
+            margin-bottom: 30px;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, #4a69bd, #9c88ff);
+        }
+        
+        .constellations-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+        
+        .constellation-card {
+            background: rgba(20, 20, 40, 0.7);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(156, 136, 255, 0.2);
+        }
+        
+        .constellation-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(156, 136, 255, 0.3);
+            border-color: rgba(156, 136, 255, 0.5);
+        }
+        
+        .constellation-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        
+        .constellation-info {
+            padding: 20px;
+        }
+        
+        .constellation-info h3 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: #9c88ff;
+        }
+        
+        .constellation-info p {
+            line-height: 1.6;
+            color: #cccccc;
+        }
+        
+        .zodiac-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin-bottom: 60px;
+        }
+        
+        .zodiac-card {
+            background: rgba(20, 20, 40, 0.7);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(156, 136, 255, 0.2);
+        }
+        
+        .zodiac-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(156, 136, 255, 0.3);
+            border-color: rgba(156, 136, 255, 0.5);
+        }
+        
+        .zodiac-icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+            color: #9c88ff;
+        }
+        
+        .zodiac-name {
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+        
+        .zodiac-date {
+            font-size: 14px;
+            color: #cccccc;
+        }
+        
+        .history {
+            background: rgba(20, 20, 40, 0.7);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 60px;
+            border: 1px solid rgba(156, 136, 255, 0.2);
+        }
+        
+        .history-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+        
+        .history-item {
+            display: flex;
+            align-items: flex-start;
+        }
+        
+        .history-icon {
+            font-size: 24px;
+            margin-right: 15px;
+            color: #9c88ff;
+            padding-top: 5px;
+        }
+        
+        .history-text h3 {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: #9c88ff;
+        }
+        
+        .history-text p {
+            line-height: 1.6;
+            color: #cccccc;
+        }
+        
+        .map-section {
+            margin-bottom: 60px;
+        }
+        
+        .map-container {
+            position: relative;
+            width: 100%;
+            height: 500px;
+            background: rgba(20, 20, 40, 0.7);
+            border-radius: 15px;
+            overflow: hidden;
+            border: 1px solid rgba(156, 136, 255, 0.2);
+        }
+        
+        .map-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.7;
+        }
+        
+        .map-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: rgba(10, 10, 26, 0.6);
+            backdrop-filter: blur(5px);
+        }
+        
+        .map-title {
+            font-size: 30px;
+            margin-bottom: 20px;
+            color: #9c88ff;
+        }
+        
+        .map-description {
+            font-size: 18px;
+            max-width: 600px;
+            text-align: center;
+            line-height: 1.6;
+            color: #cccccc;
+            margin-bottom: 30px;
+        }
+        
+        .map-button {
+            display: inline-block;
+            padding: 12px 30px;
+            background: linear-gradient(90deg, #4a69bd, #9c88ff);
+            color: white;
+            text-decoration: none;
+            border-radius: 30px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .map-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(156, 136, 255, 0.5);
+        }
+        
+        footer {
+            padding: 30px 50px;
+            background: rgba(10, 10, 26, 0.8);
+            text-align: center;
+            border-top: 1px solid rgba(156, 136, 255, 0.2);
+            margin-top: 50px;
+        }
+        
+        .social-links {
+            margin-bottom: 20px;
+        }
+        
+        .social-links a {
+            color: #ffffff;
+            font-size: 20px;
+            margin: 0 15px;
+            transition: all 0.3s ease;
+        }
+        
+        .social-links a:hover {
+            color: #9c88ff;
+            transform: translateY(-3px);
+        }
+        
+        .menu-toggle {
+            display: none;
+            font-size: 24px;
+            cursor: pointer;
+        }
+        
+        @media (max-width: 768px) {
+            header {
+                padding: 15px 20px;
+            }
+            
+            .menu-toggle {
+                display: block;
+            }
+            
+            .nav-links {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                height: 100vh;
+                width: 250px;
+                background: rgba(10, 10, 26, 0.95);
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                transition: right 0.5s ease;
+            }
+            
+            .nav-links.active {
+                right: 0;
+            }
+            
+            .nav-links li {
+                margin: 20px 0;
+            }
+            
+            .page-header {
+                padding: 120px 20px 30px;
+            }
+            
+            .page-header h1 {
+                font-size: 36px;
+            }
+            
+            .content {
+                padding: 30px 20px;
+            }
+            
+            .zodiac-container {
+                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            }
+            
+            .map-container {
+                height: 300px;
+            }
+        }
+        
+        /* Wikipedia link styling */
+        .wiki-link {
+            color: #9c88ff;
+            text-decoration: none;
+            border-bottom: 1px dashed #9c88ff;
+            transition: all 0.3s ease;
+        }
+        
+        .wiki-link:hover {
+            color: #e056fd;
+            border-bottom-color: #e056fd;
+        }
+    </style>
+</head>
+<body>
+    <!-- Starry Background -->
+    <div class="stars" id="stars"></div>
+    
+    <!-- Header -->
+    <header>
+        <nav>
+            <div class="logo">Cosmic Explorer</div>
+            <div class="menu-toggle" id="menuToggle">
+                <i class="fas fa-bars"></i>
+            </div>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="stars.html">Stars</a></li>
+                <li><a href="galaxies.html">Galaxies</a></li>
+                <li><a href="constellations.html">Constellations</a></li>
+                <li><a href="exploration.html">Space Exploration</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1>The Stories in the Stars</h1>
+        <p><a href="https://en.wikipedia.org/wiki/Constellation" target="_blank" class="wiki-link">Constellations</a> are patterns of stars that have been recognized and named by various cultures throughout history. These celestial formations have guided sailors, inspired myths, and helped humanity make sense of the night sky for thousands of years.</p>
+    </div>
+    
+    <!-- Content Section -->
+    <div class="content">
+        <!-- Constellations Grid -->
+        <section>
+            <h2 class="section-title">Famous Constellations</h2>
+            <div class="constellations-grid">
+                <div class="constellation-card">
+                    <img src="https://images.unsplash.com/photo-1502134249126-9f3755a50d78?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Orion Constellation" class="constellation-image">
+                    <div class="constellation-info">
+                        <h3><a href="https://en.wikipedia.org/wiki/Orion_(constellation)" target="_blank" class="wiki-link">Orion</a></h3>
+                        <p>One of the most recognizable constellations, representing a hunter in Greek mythology. Orion is prominent in the winter sky and contains many bright stars and nebulae.</p>
+                    </div>
+                </div>
+                <div class="constellation-card">
+                    <img src="https://images.unsplash.com/photo-1502134249126-9f3755a50d78?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Ursa Major Constellation" class="constellation-image">
+                    <div class="constellation-info">
+                        <h3><a href="https://en.wikipedia.org/wiki/Ursa_Major" target="_blank" class="wiki-link">Ursa Major</a></h3>
+                        <p>Also known as the Great Bear, this constellation contains the group of stars commonly called the Big Dipper. It has been used for navigation for centuries.</p>
+                    </div>
+                </div>
+                <div class="constellation-card">
+                    <img src="https://images.unsplash.com/photo-1502134249126-9f3755a50d78?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Cassiopeia Constellation" class="constellation-image">
+                    <div class="constellation-info">
+                        <h3><a href="https://en.wikipedia.org/wiki/Cassiopeia_(constellation)" target="_blank" class="wiki-link">Cassiopeia</a></h3>
+                        <p>Easily recognizable by its distinctive W shape, this constellation represents a vain queen in Greek mythology. It is visible year-round in northern latitudes.</p>
+                    </div>
+                </div>
+                <div class="constellation-card">
+                    <img src="https://images.unsplash.com/photo-1502134249126-9f3755a50d78?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Scorpius Constellation" class="constellation-image">
+                    <div class="constellation-info">
+                        <h3><a href="https://en.wikipedia.org/wiki/Scorpius" target="_blank" class="wiki-link">Scorpius</a></h3>
+                        <p>One of the few constellations that actually resembles its namesake, the scorpion. It contains the bright red star Antares and is best seen in the summer sky.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Zodiac Section -->
+        <section>
+            <h2 class="section-title">Zodiac Constellations</h2>
+            <div class="zodiac-container">
+                <div class="zodiac-card">
+                    <div class="zodiac-icon">♈</div>
+                    <div class="zodiac-name"><a href="https://en.wikipedia.org/wiki/Aries_(constellation)" target="_blank" class="wiki-link">Aries</a></div>
+                    <div class="zodiac-date">Mar 21 - Apr 19</div>
+                </div>
+                <div class="zodiac-card">
+                    <div class="zodiac-icon">♉</div>
+                    <div class="zodiac-name"><a href="https://en.wikipedia.org/wiki/Taurus_(constellation)" target="_blank" class="wiki-link">Taurus</a></div>
+                    <div class="zodiac-date">Apr 20 - May 20</div>
+                </div>
+                <div class="zodiac-card">
+                    <div class="zodiac-icon">♊</div>
+                    <div class="zodiac-name"><a href="https://en.wikipedia.org/wiki/Gemini_(constellation)" target="_blank" class="wiki-link">Gemini</a></div>
+                    <div class="zodiac-date">May 21 - Jun 20</div>
+                </div>
+                <div class="zodiac-card">
+                    <div class="zodiac-icon">♋</div>
+                    <div class="zodiac-name"><a href="https://en.wikipedia.org/wiki/Cancer_(constellation)" target="_blank" class="wiki-link">Cancer</a></div>
+                    <div class="zodiac-date">Jun 21 - Jul 22</div>
+                </div>
+                <div class="zodiac-card">
+                    <div class="zodiac-icon">♌</div>
+                    <div class="zodiac-name"><a href="https://en.wikipedia.org/wiki/Leo_(constellation)" target="_blank" class="wiki-link">Leo</a></div>
+                    <div class="zodiac-date">Jul 23 - Aug 22</div>
+                </div>
+                <div class="zodiac-card">
+                    <div class="zodiac-icon">♍</div>
+                    <div class="zodiac-name"><a href="https://en.wikipedia.org/wiki/Virgo_(constellation)" target="_blank" class="wiki-link">Virgo</a></div>
+                    <div class="zodiac-date">Aug 23 - Sep 22</div>
+                </div>
+                <div class="zodiac-card">
+                    <div class="zodiac-icon">♎</div>
+                    <div class="zodiac-name"><a href="https://en.wikipedia.org/wiki/Libra_(constellation)" target="_blank" class="wiki-link">Libra</a></div>
+                    <div class="zodiac-date">Sep 23 - Oct 22</div>
+                </div>
+                <div class="zodiac-card">
+                    <div class="zodiac-icon">♏</div>
+                    <div class="zodiac-name"><a href="https://en.wikipedia.org/wiki/Scorpius" target="_blank" class="wiki-link">Scorpio</a></div>
+                    <div class="zodiac-date">Oct 23 - Nov 21</div>
+                </div>
+                <div class="zodiac-card">
+                    <div class="zodiac-icon">♐</div>
+                    <div class="zodiac-name"><a href="https://en.wikipedia.org/wiki/Sagittarius_(constellation)" target="_blank" class="wiki-link">Sagittarius</a></div>
+                    <div class="zodiac-date">Nov 22 - Dec 21</div>
+                </div>
+                <div class="zodiac-card">
+                    <div class="zodiac-icon">♑</div>
+                    <div class="zodiac-name"><a href="https://en.wikipedia.org/wiki/Capricornus" target="_blank" class="wiki-link">Capricorn</a></div>
+                    <div class="zodiac-date">Dec 22 - Jan 19</div>
+                </div>
+                <div class="zodiac-card">
+                    <div class="zodiac-icon">♒</div>
+                    <div class="zodiac-name"><a href="https://en.wikipedia.org/wiki/Aquarius_(constellation)" target="_blank" class="wiki-link">Aquarius</a></div>
+                    <div class="zodiac-date">Jan 20 - Feb 18</div>
+                </div>
+                <div class="zodiac-card">
+                    <div class="zodiac-icon">♓</div>
+                    <div class="zodiac-name"><a href="https://en.wikipedia.org/wiki/Pisces_(constellation)" target="_blank" class="wiki-link">Pisces</a></div>
+                    <div class="zodiac-date">Feb 19 - Mar 20</div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- History Section -->
+        <section class="history">
+            <h2 class="section-title">History of Constellations</h2>
+            <div class="history-content">
+                <div class="history-item">
+                    <div class="history-icon">
+                        <i class="fas fa-landmark"></i>
+                    </div>
+                    <div class="history-text">
+                        <h3>Ancient Origins</h3>
+                        <p>The earliest known records of constellations date back to ancient <a href="https://en.wikipedia.org/wiki/Babylonian_astronomy" target="_blank" class="wiki-link">Babylonian</a> and <a href="https://en.wikipedia.org/wiki/Egyptian_astronomy" target="_blank" class="wiki-link">Egyptian</a> civilizations, around 4000 years ago. These early astronomers identified patterns to track time and seasons.</p>
+                    </div>
+                </div>
+                <div class="history-item">
+                    <div class="history-icon">
+                        <i class="fas fa-scroll"></i>
+                    </div>
+                    <div class="history-text">
+                        <h3>Greek Mythology</h3>
+                        <p>The ancient Greeks adopted Babylonian constellations and added their own mythological stories. Many constellation names we use today come from <a href="https://en.wikipedia.org/wiki/Greek_mythology" target="_blank" class="wiki-link">Greek mythology</a>, recorded by <a href="https://en.wikipedia.org/wiki/Ptolemy" target="_blank" class="wiki-link">Ptolemy</a> in the 2nd century.</p>
+                    </div>
+                </div>
+                <div class="history-item">
+                    <div class="history-icon">
+                        <i class="fas fa-compass"></i>
+                    </div>
+                    <div class="history-text">
+                        <h3>Navigation</h3>
+                        <p>Throughout history, sailors and travelers have used constellations for navigation. <a href="https://en.wikipedia.org/wiki/Polaris" target="_blank" class="wiki-link">Polaris</a>, the North Star, has been particularly important for determining direction in the Northern Hemisphere.</p>
+                    </div>
+                </div>
+                <div class="history-item">
+                    <div class="history-icon">
+                        <i class="fas fa-globe-americas"></i>
+                    </div>
+                    <div class="history-text">
+                        <h3>Modern Classification</h3>
+                        <p>In 1922, the <a href="https://en.wikipedia.org/wiki/International_Astronomical_Union" target="_blank" class="wiki-link">International Astronomical Union</a> officially recognized 88 constellations, covering the entire celestial sphere. This standardized system is used by astronomers worldwide today.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Interactive Map Section -->
+        <section class="map-section">
+            <h2 class="section-title">Interactive Star Map</h2>
+            <div class="map-container">
+                <img src="https://images.unsplash.com/photo-1502134249126-9f3755a50d78?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" alt="Star Map" class="map-image">
+                <div class="map-overlay">
+                    <div class="map-title">Explore the Night Sky</div>
+                    <div class="map-description">Discover constellations visible from your location tonight. Our interactive star map helps you identify patterns and learn about the mythology behind them.</div>
+                    <a href="#" class="map-button">Launch Star Map</a>
+                </div>
+            </div>
+        </section>
+    </div>
+    
+    <!-- Footer -->
+    <footer>
+        <div class="social-links">
+            <a href="#"><i class="fab fa-facebook"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-youtube"></i></a>
+        </div>
+        <p>&copy; 2023 Cosmic Explorer. All rights reserved.</p>
+    </footer>
+    
+    <script>
+        // Create starry background
+        function createStars() {
+            const starsContainer = document.getElementById('stars');
+            const numberOfStars = 200;
+            
+            for (let i = 0; i < numberOfStars; i++) {
+                const star = document.createElement('div');
+                star.classList.add('star');
+                
+                // Random position
+                const posX = Math.random() * 100;
+                const posY = Math.random() * 100;
+                
+                // Random size
+                const size = Math.random() * 3;
+                
+                // Random animation duration
+                const duration = Math.random() * 5 + 3;
+                
+                star.style.left = `${posX}%`;
+                star.style.top = `${posY}%`;
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+                star.style.animationDuration = `${duration}s`;
+                
+                starsContainer.appendChild(star);
+            }
+        }
+        
+        // Mobile menu toggle
+        const menuToggle = document.getElementById('menuToggle');
+        const navLinks = document.getElementById('navLinks');
+        
+        menuToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+        
+        // Close mobile menu when a link is clicked
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('active');
+            });
+        });
+        
+        // Initialize stars on page load
+        window.addEventListener('load', createStars);
+    </script>
+</body>
+</html>

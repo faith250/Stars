@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Space Exploration - Cosmic Explorer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Existing CSS styles remain the same */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #0a0a1a;
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+        
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .star {
+            position: absolute;
+            background-color: #ffffff;
+            border-radius: 50%;
+            animation: twinkle 4s infinite;
+        }
+        
+        @keyframes twinkle {
+            0% { opacity: 0.2; }
+            50% { opacity: 1; }
+            100% { opacity: 0.2; }
+        }
+        
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 20px 50px;
+            background: rgba(10, 10, 26, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 100;
+            transition: all 0.3s ease;
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            background: linear-gradient(90deg, #4a69bd, #9c88ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-links li {
+            margin-left: 30px;
+        }
+        
+        .nav-links a {
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .nav-links a:hover {
+            color: #9c88ff;
+        }
+        
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #4a69bd, #9c88ff);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+        
+        .page-header {
+            padding: 150px 50px 50px;
+            text-align: center;
+        }
+        
+        .page-header h1 {
+            font-size: 50px;
+            margin-bottom: 20px;
+            background: linear-gradient(90deg, #4a69bd, #9c88ff, #e056fd);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .page-header p {
+            font-size: 18px;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+            color: #cccccc;
+        }
+        
+        .content {
+            padding: 50px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .section-title {
+            font-size: 36px;
+            margin-bottom: 30px;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, #4a69bd, #9c88ff);
+        }
+        
+        .timeline {
+            position: relative;
+            margin-bottom: 60px;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            width: 2px;
+            height: 100%;
+            background: linear-gradient(to bottom, #4a69bd, #9c88ff);
+            transform: translateX(-50%);
+        }
+        
+        .timeline-item {
+            position: relative;
+            margin-bottom: 50px;
+            width: 50%;
+        }
+        
+        .timeline-item:nth-child(odd) {
+            left: 0;
+            padding-right: 50px;
+            text-align: right;
+        }
+        
+        .timeline-item:nth-child(even) {
+            left: 50%;
+            padding-left: 50px;
+        }
+        
+        .timeline-content {
+            background: rgba(20, 20, 40, 0.7);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid rgba(156, 136, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .timeline-content:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(156, 136, 255, 0.3);
+            border-color: rgba(156, 136, 255, 0.5);
+        }
+        
+        .timeline-date {
+            font-size: 18px;
+            font-weight: bold;
+            color: #9c88ff;
+            margin-bottom: 10px;
+        }
+        
+        .timeline-title {
+            font-size: 22px;
+            margin-bottom: 10px;
+        }
+        
+        .timeline-description {
+            color: #cccccc;
+            line-height: 1.6;
+        }
+        
+        .timeline-dot {
+            position: absolute;
+            top: 25px;
+            width: 20px;
+            height: 20px;
+            background: #9c88ff;
+            border-radius: 50%;
+            box-shadow: 0 0 0 5px rgba(156, 136, 255, 0.2);
+        }
+        
+        .timeline-item:nth-child(odd) .timeline-dot {
+            right: -10px;
+        }
+        
+        .timeline-item:nth-child(even) .timeline-dot {
+            left: -10px;
+        }
+        
+        .missions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+        
+        .mission-card {
+            background: rgba(20, 20, 40, 0.7);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(156, 136, 255, 0.2);
+        }
+        
+        .mission-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(156, 136, 255, 0.3);
+            border-color: rgba(156, 136, 255, 0.5);
+        }
+        
+        .mission-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        
+        .mission-info {
+            padding: 20px;
+        }
+        
+        .mission-info h3 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: #9c88ff;
+        }
+        
+        .mission-info p {
+            line-height: 1.6;
+            color: #cccccc;
+            margin-bottom: 15px;
+        }
+        
+        .mission-status {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        
+        .status-active {
+            background: rgba(46, 213, 115, 0.2);
+            color: #2ed573;
+        }
+        
+        .status-completed {
+            background: rgba(0, 123, 255, 0.2);
+            color: #007bff;
+        }
+        
+        .status-planned {
+            background: rgba(255, 177, 66, 0.2);
+            color: #ffb142;
+        }
+        
+        .agencies {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+        
+        .agency-card {
+            background: rgba(20, 20, 40, 0.7);
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(156, 136, 255, 0.2);
+        }
+        
+        .agency-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(156, 136, 255, 0.3);
+            border-color: rgba(156, 136, 255, 0.5);
+        }
+        
+        .agency-logo {
+            font-size: 50px;
+            margin-bottom: 20px;
+            color: #9c88ff;
+        }
+        
+        .agency-name {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        
+        .agency-desc {
+            color: #cccccc;
+            line-height: 1.6;
+        }
+        
+        .future {
+            background: rgba(20, 20, 40, 0.7);
+            border-radius: 15px;
+            padding: 40px;
+            margin-bottom: 60px;
+            border: 1px solid rgba(156, 136, 255, 0.2);
+            text-align: center;
+        }
+        
+        .future h2 {
+            font-size: 36px;
+            margin-bottom: 20px;
+            background: linear-gradient(90deg, #4a69bd, #9c88ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .future p {
+            font-size: 18px;
+            max-width: 800px;
+            margin: 0 auto 30px;
+            line-height: 1.6;
+            color: #cccccc;
+        }
+        
+        .future-goals {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .goal-item {
+            background: rgba(10, 10, 26, 0.7);
+            border-radius: 10px;
+            padding: 20px;
+            border: 1px solid rgba(156, 136, 255, 0.2);
+        }
+        
+        .goal-icon {
+            font-size: 30px;
+            margin-bottom: 15px;
+            color: #9c88ff;
+        }
+        
+        .goal-title {
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+        
+        .goal-desc {
+            color: #cccccc;
+            line-height: 1.5;
+        }
+        
+        footer {
+            padding: 30px 50px;
+            background: rgba(10, 10, 26, 0.8);
+            text-align: center;
+            border-top: 1px solid rgba(156, 136, 255, 0.2);
+            margin-top: 50px;
+        }
+        
+        .social-links {
+            margin-bottom: 20px;
+        }
+        
+        .social-links a {
+            color: #ffffff;
+            font-size: 20px;
+            margin: 0 15px;
+            transition: all 0.3s ease;
+        }
+        
+        .social-links a:hover {
+            color: #9c88ff;
+            transform: translateY(-3px);
+        }
+        
+        .menu-toggle {
+            display: none;
+            font-size: 24px;
+            cursor: pointer;
+        }
+        
+        @media (max-width: 768px) {
+            header {
+                padding: 15px 20px;
+            }
+            
+            .menu-toggle {
+                display: block;
+            }
+            
+            .nav-links {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                height: 100vh;
+                width: 250px;
+                background: rgba(10, 10, 26, 0.95);
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                transition: right 0.5s ease;
+            }
+            
+            .nav-links.active {
+                right: 0;
+            }
+            
+            .nav-links li {
+                margin: 20px 0;
+            }
+            
+            .page-header {
+                padding: 120px 20px 30px;
+            }
+            
+            .page-header h1 {
+                font-size: 36px;
+            }
+            
+            .content {
+                padding: 30px 20px;
+            }
+            
+            .timeline::before {
+                left: 20px;
+            }
+            
+            .timeline-item {
+                width: 100%;
+                padding-left: 50px;
+                padding-right: 0;
+                text-align: left;
+            }
+            
+            .timeline-item:nth-child(even) {
+                left: 0;
+            }
+            
+            .timeline-dot {
+                left: 10px !important;
+            }
+        }
+        
+        /* Wikipedia link styling */
+        .wiki-link {
+            color: #9c88ff;
+            text-decoration: none;
+            border-bottom: 1px dashed #9c88ff;
+            transition: all 0.3s ease;
+        }
+        
+        .wiki-link:hover {
+            color: #e056fd;
+            border-bottom-color: #e056fd;
+        }
+    </style>
+</head>
+<body>
+    <!-- Starry Background -->
+    <div class="stars" id="stars"></div>
+    
+    <!-- Header -->
+    <header>
+        <nav>
+            <div class="logo">Cosmic Explorer</div>
+            <div class="menu-toggle" id="menuToggle">
+                <i class="fas fa-bars"></i>
+            </div>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="stars.html">Stars</a></li>
+                <li><a href="galaxies.html">Galaxies</a></li>
+                <li><a href="constellations.html">Constellations</a></li>
+                <li><a href="exploration.html">Space Exploration</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1>Journey into Space</h1>
+        <p>Humanity's quest to explore the cosmos has led to incredible achievements, from the first satellite launch to landing on the Moon and sending probes to the edge of our solar system. Discover the history, current missions, and future of <a href="https://en.wikipedia.org/wiki/Space_exploration" target="_blank" class="wiki-link">space exploration</a>.</p>
+    </div>
+    
+    <!-- Content Section -->
+    <div class="content">
+        <!-- Timeline -->
+        <section class="timeline">
+            <h2 class="section-title">History of Space Exploration</h2>
+            
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <div class="timeline-date">1957</div>
+                    <div class="timeline-title">First Satellite</div>
+                    <div class="timeline-description">The Soviet Union launches <a href="https://en.wikipedia.org/wiki/Sputnik_1" target="_blank" class="wiki-link">Sputnik 1</a>, the world's first artificial satellite, marking the beginning of the space age.</div>
+                </div>
+            </div>
+            
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <div class="timeline-date">1961</div>
+                    <div class="timeline-title">First Human in Space</div>
+                    <div class="timeline-description"><a href="https://en.wikipedia.org/wiki/Yuri_Gagarin" target="_blank" class="wiki-link">Yuri Gagarin</a> becomes the first human to journey into outer space, completing one orbit around Earth aboard Vostok 1.</div>
+                </div>
+            </div>
+            
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <div class="timeline-date">1969</div>
+                    <div class="timeline-title">Moon Landing</div>
+                    <div class="timeline-description">NASA's <a href="https://en.wikipedia.org/wiki/Apollo_11" target="_blank" class="wiki-link">Apollo 11</a> mission successfully lands the first humans on the Moon, with <a href="https://en.wikipedia.org/wiki/Neil_Armstrong" target="_blank" class="wiki-link">Neil Armstrong</a> and <a href="https://en.wikipedia.org/wiki/Buzz_Aldrin" target="_blank" class="wiki-link">Buzz Aldrin</a> taking their historic steps.</div>
+                </div>
+            </div>
+            
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <div class="timeline-date">1971</div>
+                    <div class="timeline-title">First Space Station</div>
+                    <div class="timeline-description">The Soviet Union launches <a href="https://en.wikipedia.org/wiki/Salyut_1" target="_blank" class="wiki-link">Salyut 1</a>, the world's first space station, paving the way for long-duration human spaceflight.</div>
+                </div>
+            </div>
+            
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <div class="timeline-date">1990</div>
+                    <div class="timeline-title">Hubble Space Telescope</div>
+                    <div class="timeline-description">NASA launches the <a href="https://en.wikipedia.org/wiki/Hubble_Space_Telescope" target="_blank" class="wiki-link">Hubble Space Telescope</a>, revolutionizing our understanding of the universe with stunning images and data.</div>
+                </div>
+            </div>
+            
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <div class="timeline-date">1998</div>
+                    <div class="timeline-title">International Space Station</div>
+                    <div class="timeline-description">The first module of the <a href="https://en.wikipedia.org/wiki/International_Space_Station" target="_blank" class="wiki-link">International Space Station</a> is launched, beginning the assembly of humanity's largest and most complex space structure.</div>
+                </div>
+            </div>
+            
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <div class="timeline-date">2012</div>
+                    <div class="timeline-title">Curiosity Rover</div>
+                    <div class="timeline-description">NASA's <a href="https://en.wikipedia.org/wiki/Curiosity_(rover)" target="_blank" class="wiki-link">Curiosity rover</a> successfully lands on Mars, beginning its mission to explore the planet's climate and geology.</div>
+                </div>
+            </div>
+            
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <div class="timeline-date">2020</div>
+                    <div class="timeline-title">Commercial Spaceflight</div>
+                    <div class="timeline-description"><a href="https://en.wikipedia.org/wiki/SpaceX" target="_blank" class="wiki-link">SpaceX</a>'s Crew Dragon becomes the first commercial spacecraft to transport astronauts to the International Space Station.</div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Missions -->
+        <section>
+            <h2 class="section-title">Current & Notable Missions</h2>
+            <div class="missions">
+                <div class="mission-card">
+                    <img src="https://images.unsplash.com/photo-1446776877081-d282a0f896e2?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="James Webb Space Telescope" class="mission-image">
+                    <div class="mission-info">
+                        <h3><a href="https://en.wikipedia.org/wiki/James_Webb_Space_Telescope" target="_blank" class="wiki-link">James Webb Space Telescope</a></h3>
+                        <p>The most powerful space telescope ever built, designed to observe the earliest galaxies in the universe and study exoplanet atmospheres.</p>
+                        <span class="mission-status status-active">Active</span>
+                    </div>
+                </div>
+                <div class="mission-card">
+                    <img src="https://images.unsplash.com/photo-1614730321146-b6fa6a46bcb4?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Mars Perseverance Rover" class="mission-image">
+                    <div class="mission-info">
+                        <h3><a href="https://en.wikipedia.org/wiki/Perseverance_(rover)" target="_blank" class="wiki-link">Mars Perseverance Rover</a></h3>
+                        <p>NASA's latest Mars rover is searching for signs of ancient microbial life and collecting samples for future return to Earth.</p>
+                        <span class="mission-status status-active">Active</span>
+                    </div>
+                </div>
+                <div class="mission-card">
+                    <img src="https://images.unsplash.com/photo-1462331940025-496dfbfc7564?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Artemis Program" class="mission-image">
+                    <div class="mission-info">
+                        <h3><a href="https://en.wikipedia.org/wiki/Artemis_program" target="_blank" class="wiki-link">Artemis Program</a></h3>
+                        <p>NASA's program to return humans to the Moon, including the first woman and the next man, and establish a sustainable lunar presence.</p>
+                        <span class="mission-status status-planned">Planned</span>
+                    </div>
+                </div>
+                <div class="mission-card">
+                    <img src="https://images.unsplash.com/photo-1446776877081-d282a0f896e2?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Voyager Probes" class="mission-image">
+                    <div class="mission-info">
+                        <h3><a href="https://en.wikipedia.org/wiki/Voyager_program" target="_blank" class="wiki-link">Voyager Probes</a></h3>
+                        <p>The twin Voyager spacecraft have been exploring our solar system since 1977 and are now in interstellar space, sending back valuable data.</p>
+                        <span class="mission-status status-active">Active</span>
+                    </div>
+                </div>
+                <div class="mission-card">
+                    <img src="https://images.unsplash.com/photo-1462331940025-496dfbfc7564?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Europa Clipper" class="mission-image">
+                    <div class="mission-info">
+                        <h3><a href="https://en.wikipedia.org/wiki/Europa_Clipper" target="_blank" class="wiki-link">Europa Clipper</a></h3>
+                        <p>A future mission to Jupiter's moon Europa, which has a subsurface ocean that may harbor conditions suitable for life.</p>
+                        <span class="mission-status status-planned">Planned</span>
+                    </div>
+                </div>
+                <div class="mission-card">
+                    <img src="https://images.unsplash.com/photo-1446776877081-d282a0f896e2?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="New Horizons" class="mission-image">
+                    <div class="mission-info">
+                        <h3><a href="https://en.wikipedia.org/wiki/New_Horizons" target="_blank" class="wiki-link">New Horizons</a></h3>
+                        <p>NASA's mission that performed the first flyby of Pluto in 2015 and is now exploring the Kuiper Belt, the region of the solar system beyond Neptune.</p>
+                        <span class="mission-status status-active">Active</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Space Agencies -->
+        <section>
+            <h2 class="section-title">Leading Space Agencies</h2>
+            <div class="agencies">
+                <div class="agency-card">
+                    <div class="agency-logo">
+                        <i class="fas fa-rocket"></i>
+                    </div>
+                    <div class="agency-name"><a href="https://en.wikipedia.org/wiki/NASA" target="_blank" class="wiki-link">NASA</a></div>
+                    <div class="agency-desc">The National Aeronautics and Space Administration, responsible for the U.S. civilian space program and aeronautics research.</div>
+                </div>
+                <div class="agency-card">
+                    <div class="agency-logo">
+                        <i class="fas fa-satellite"></i>
+                    </div>
+                    <div class="agency-name"><a href="https://en.wikipedia.org/wiki/European_Space_Agency" target="_blank" class="wiki-link">ESA</a></div>
+                    <div class="agency-desc">The European Space Agency, an intergovernmental organization dedicated to the exploration of space.</div>
+                </div>
+                <div class="agency-card">
+                    <div class="agency-logo">
+                        <i class="fas fa-meteor"></i>
+                    </div>
+                    <div class="agency-name"><a href="https://en.wikipedia.org/wiki/Roscosmos" target="_blank" class="wiki-link">Roscosmos</a></div>
+                    <div class="agency-desc">The Russian space agency responsible for the country's space science program and general aerospace research.</div>
+                </div>
+                <div class="agency-card">
+                    <div class="agency-logo">
+                        <i class="fas fa-globe-asia"></i>
+                    </div>
+                    <div class="agency-name"><a href="https://en.wikipedia.org/wiki/China_National_Space_Administration" target="_blank" class="wiki-link">CNSA</a></div>
+                    <div class="agency-desc">The China National Space Administration, responsible for planning and development of national space activities.</div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Future Section -->
+        <section class="future">
+            <h2>The Future of Space Exploration</h2>
+            <p>As technology advances and humanity's presence in space grows, we stand on the brink of a new era of exploration. From establishing permanent lunar bases to sending humans to Mars and beyond, the future of space exploration promises to be even more exciting than its past.</p>
+            
+            <div class="future-goals">
+                <div class="goal-item">
+                    <div class="goal-icon">
+                        <i class="fas fa-user-astronaut"></i>
+                    </div>
+                    <div class="goal-title">Human Mars Missions</div>
+                    <div class="goal-desc">Sending astronauts to Mars and establishing a sustainable presence on the Red Planet.</div>
+                </div>
+                <div class="goal-item">
+                    <div class="goal-icon">
+                        <i class="fas fa-moon"></i>
+                    </div>
+                    <div class="goal-title">Lunar Bases</div>
+                    <div class="goal-desc">Creating permanent research stations on the Moon as a stepping stone for deeper space exploration.</div>
+                </div>
+                <div class="goal-item">
+                    <div class="goal-icon">
+                        <i class="fas fa-satellite-dish"></i>
+                    </div>
+                    <div class="goal-title">Advanced Telescopes</div>
+                    <div class="goal-desc">Developing next-generation space telescopes to study exoplanets and the early universe.</div>
+                </div>
+                <div class="goal-item">
+                    <div class="goal-icon">
+                        <i class="fas fa-space-shuttle"></i>
+                    </div>
+                    <div class="goal-title">Interstellar Probes</div>
+                    <div class="goal-desc">Designing spacecraft capable of reaching nearby star systems within our lifetime.</div>
+                </div>
+            </div>
+        </section>
+    </div>
+    
+    <!-- Footer -->
+    <footer>
+        <div class="social-links">
+            <a href="#"><i class="fab fa-facebook"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-youtube"></i></a>
+        </div>
+        <p>&copy; 2023 Cosmic Explorer. All rights reserved.</p>
+    </footer>
+    
+    <script>
+        // Create starry background
+        function createStars() {
+            const starsContainer = document.getElementById('stars');
+            const numberOfStars = 200;
+            
+            for (let i = 0; i < numberOfStars; i++) {
+                const star = document.createElement('div');
+                star.classList.add('star');
+                
+                // Random position
+                const posX = Math.random() * 100;
+                const posY = Math.random() * 100;
+                
+                // Random size
+                const size = Math.random() * 3;
+                
+                // Random animation duration
+                const duration = Math.random() * 5 + 3;
+                
+                star.style.left = `${posX}%`;
+                star.style.top = `${posY}%`;
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+                star.style.animationDuration = `${duration}s`;
+                
+                starsContainer.appendChild(star);
+            }
+        }
+        
+        // Mobile menu toggle
+        const menuToggle = document.getElementById('menuToggle');
+        const navLinks = document.getElementById('navLinks');
+        
+        menuToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+        
+        // Close mobile menu when a link is clicked
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('active');
+            });
+        });
+        
+        // Initialize stars on page load
+        window.addEventListener('load', createStars);
+    </script>
+</body>
+</html>
